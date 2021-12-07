@@ -40,13 +40,12 @@ end
 
 def try_load_students
   filename = ARGV.first 
-  return if filename.nil? 
-  if File.exists?(filename) 
+  if filename.nil? 
+    load_students
+  elsif File.exists?(filename) 
     load_students(filename)
-     puts "Loaded #{@students.count} from #{filename}"
   else 
-    puts "Sorry, #{filename} doesn't exist."
-    exit 
+    puts "Sorry, #{filename} doesn't exist. No students loaded" 
   end
 end
 
@@ -57,6 +56,7 @@ def load_students(filename = "students.csv")
     @students << {name: name, cohort: cohort.to_sym}
   end
   file.close
+  puts "Loaded #{@students.count} from #{filename}"
 end
 
 def input_students
@@ -65,7 +65,7 @@ def input_students
   name = STDIN.gets.chomp
   while !name.empty? do
     @students << {name: name, cohort: :november}
-    puts "Now we have #{@students.count} students"
+    puts "Student inputted. We now have #{@students.count} students"
     name = STDIN.gets.chomp
   end
 end
@@ -78,6 +78,7 @@ def save_students
     file.puts csv_line
   end
   file.close
+  puts "Saved #{@students.count} to students.csv"
 end
 
 def print_header
