@@ -81,18 +81,23 @@ def process(selection)
 end
 
 def delete_students
-  puts "\nPlease enter the number of the student to delete"
+  puts "\nPlease enter the ID number of the student to delete"
   puts "To finish, just hit return twice"
-  name = STDIN.gets.chomp
+  del_id = STDIN.gets.chomp
   
-  while !name.empty? do
-    if name.to_i
-      @students.delete_at(name.to_i - 1)
-      puts "Student deleted. We now have #{@students.count} students"
-      name = STDIN.gets.chomp
+  while !del_id.empty? do
+    if del_id.to_i
+      if @students.find {|student| student[:id_num] == del_id }
+        @students.delete_if { |student| student[:id_num] == del_id }
+        puts "Student deleted. We now have #{@students.count} students"
+        del_id = STDIN.gets.chomp
+      else
+        puts "Student ID not found, try again"
+        del_id = STDIN.gets.chomp
+      end
     else
       puts "I don't know what you mean, try again"
-      name = STDIN.gets.chomp
+      del_id = STDIN.gets.chomp
     end
   end
 end
@@ -119,7 +124,7 @@ def input_students
   puts "To finish, just hit return twice"
   name = STDIN.gets.chomp
   while !name.empty? do
-    @students << {id_num: new_id_num, name: name, cohort: @current_cohort, score: 0}
+    @students << {id_num: new_id_num.to_s, name: name, cohort: @current_cohort, score: 0}
     puts "Student inputted. We now have #{@students.count} students"
     new_id_num += 1
     name = STDIN.gets.chomp
