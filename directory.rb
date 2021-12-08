@@ -16,7 +16,7 @@ def input_settings
   puts "Enter current cohort:"
   @current_cohort = STDIN.gets.chomp.capitalize
   puts "Enter name of file to save students to:"
-  @filename = STDIN.gets.chomp
+  @filename = STDIN.gets.chomp + ".csv"
   save_settings
 end
 
@@ -103,6 +103,7 @@ def delete_students
 end
 
 def try_load_students
+  @students = []
   if File.exists?(@filename) 
     load_students
   else 
@@ -110,8 +111,7 @@ def try_load_students
   end
 end
 
-def load_students
-  @students = []
+def load_students 
   CSV.foreach(@filename, "r") do |row|
     @students << {id_num: row[0], name: row[1], cohort: row[2], score: row[3]}
   end
@@ -119,7 +119,11 @@ def load_students
 end
 
 def input_students
-  new_id_num = @students[-1][:id_num].to_i + 1
+  if @students.empty?
+    new_id_num = 1
+  else
+    new_id_num = @students[-1][:id_num].to_i + 1
+  end
   puts "\nPlease enter the names of the students"
   puts "To finish, just hit return twice"
   name = STDIN.gets.chomp
@@ -147,15 +151,17 @@ def print_header
 end
 
 def print_students_list
-  system('clear')
-  puts "#{@school_name} Students List"
-  puts "------------------------------------------------------"
-  puts "ID Num\tName\t\t\tCohort\t\tScore"
-  puts "------------------------------------------------------"
-  @students.each do |student|
-    puts student[:id_num].to_s.ljust(8) + student[:name].to_s.ljust(24) + student[:cohort].to_s.ljust(16) + student[:score].to_s
+  if !@students.empty?
+    system('clear')
+    puts "#{@school_name} Students List"
+    puts "------------------------------------------------------"
+    puts "ID Num\tName\t\t\tCohort\t\tScore"
+    puts "------------------------------------------------------"
+    @students.each do |student|
+      puts student[:id_num].to_s.ljust(8) + student[:name].to_s.ljust(24) + student[:cohort].to_s.ljust(16) + student[:score].to_s
+    end
+    puts "------------------------------------------------------"
   end
-  puts "------------------------------------------------------"
 end
 
 def print_total_students
