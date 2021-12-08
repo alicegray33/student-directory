@@ -1,9 +1,4 @@
 require "csv"
-@school_name = "Unknown"
-@current_cohort = "Unknown"
-@filename = "unknown.csv"
-
-@students = []
 
 def load_settings
   if File.exists?("settings.csv")
@@ -19,7 +14,7 @@ def input_settings
   puts "Enter name of school:"
   @school_name = STDIN.gets.chomp
   puts "Enter current cohort:"
-  @current_cohort = STDIN.gets.chomp
+  @current_cohort = STDIN.gets.chomp.capitalize
   puts "Enter name of file to save students to:"
   @filename = STDIN.gets.chomp
   save_settings
@@ -27,7 +22,8 @@ end
 
 def change_cohort
   puts "Enter new cohort:"
-  @current_cohort = STDIN.gets.chomp
+  @current_cohort = STDIN.gets.chomp.capitalize
+  puts "Cohort changed to #{@current_cohort}"
   save_settings
 end
 
@@ -50,8 +46,8 @@ def print_menu
   puts "2. List the students"
   puts "3. Delete students"
   puts "4. Change cohort"
-  puts "4. Save changes to file"
-  puts "5. Reload from file"
+  puts "7. Save changes to file"
+  puts "8. Reload from file"
   puts "9. Exit" 
 end
 
@@ -79,7 +75,7 @@ def process(selection)
       system('clear')
       exit
     else
-      puts "I don't know what you mean, try again"
+      puts "Invalid option, try again"
   end
 end
 
@@ -111,18 +107,20 @@ end
 def load_students
   @students = []
   CSV.foreach(@filename, "r") do |row|
-    @students << {name: row[0], cohort: row[1], score: row[2]}
+    @students << {id_num: row[0], name: row[1], cohort: row[2], score: row[3]}
   end
   puts "Loaded #{@students.count} from #{@filename}"
 end
 
 def input_students
+  new_id_num = @students[-1][:id_num].to_i + 1
   puts "\nPlease enter the names of the students"
   puts "To finish, just hit return twice"
   name = STDIN.gets.chomp
   while !name.empty? do
-    @students << {name: name, cohort: @current_cohort, score: 0}
+    @students << {id_num: new_id_num, name: name, cohort: @current_cohort, score: 0}
     puts "Student inputted. We now have #{@students.count} students"
+    new_id_num += 1
     name = STDIN.gets.chomp
   end
 end
@@ -130,7 +128,7 @@ end
 def save_students
   CSV.open("students.csv", "w") do |csv|
     @students.each do |student|
-      csv << [student[:name], student[:cohort], student[:score]]
+      csv << [student[:id_num], student[:name], student[:cohort], student[:score]]
     end
   end
   puts "Saved #{@students.count} to students.csv"
@@ -142,8 +140,8 @@ def print_header
 end
 
 def print_students_list
-  @students.each_with_index do |student, num|
-    puts "#{num + 1}. #{student[:name]} (#{student[:cohort]} cohort)"
+  @students.each do |student|
+    puts "#{student[:id_num]}. #{student[:name]} (#{student[:cohort]} cohort)"
   end
 end
 
