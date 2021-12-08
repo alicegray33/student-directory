@@ -35,15 +35,16 @@ def interactive_menu
 end
 
 def print_menu
-  puts "1. Input the students"
-  puts "2. Show the students"
-  puts "3. Save to file"
-  puts "4. Load from file"
-  puts "5. Delete students"
+  puts "\nChoose an option:"
+  puts "1. Input new students"
+  puts "2. List the students"
+  puts "3. Delete students"
+  puts "4. Save changes to file"
+  puts "5. Reload from file"
   puts "9. Exit" 
 end
 
-def show_students
+def list_students
   print_header
   print_students_list
   print_footer
@@ -54,14 +55,15 @@ def process(selection)
     when "1"
       input_students
     when "2"
-      show_students
+      list_students
     when "3"
-      save_students
-    when "4"
-      load_students
-    when "5"
       delete_students
+    when "4"
+      save_students
+    when "5"
+      load_students
     when "9"
+      system('clear')
       exit
     else
       puts "I don't know what you mean, try again"
@@ -69,7 +71,7 @@ def process(selection)
 end
 
 def delete_students
-  puts "Please enter the number of the student to delete"
+  puts "\nPlease enter the number of the student to delete"
   puts "To finish, just hit return twice"
   name = STDIN.gets.chomp
   
@@ -102,7 +104,7 @@ def load_students
 end
 
 def input_students
-  puts "Please enter the names of the students"
+  puts "\nPlease enter the names of the students"
   puts "To finish, just hit return twice"
   name = STDIN.gets.chomp
   while !name.empty? do
@@ -142,6 +144,7 @@ def print_footer
   end
 end
 
+system('clear')
 load_settings
 try_load_students
 interactive_menu
