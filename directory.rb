@@ -1,8 +1,31 @@
 require "csv"
-@school_name = "Villains Academy"
-@current_cohort = "December"
+@school_name = "Unknown"
+@current_cohort = "Unknown"
+@filename = "unknown.csv"
+
 @students = []
-@filename = "students.csv"
+
+def load_settings
+  if File.exists?("settings.csv")
+    settings = CSV.read("settings.csv")
+    @school_name, @current_cohort, @filename = settings[0][0], settings[0][1], settings[0][2]
+  else
+    puts "No settings found. Initializing new user."
+    input_settings
+  end
+end
+
+def input_settings
+  puts "Enter name of school:"
+  @school_name = STDIN.gets.chomp
+  puts "Enter current cohort:"
+  @current_cohort = STDIN.gets.chomp
+  puts "Enter name of file to save students to:"
+  @filename = STDIN.gets.chomp
+  CSV.open("settings.csv", "w") do |csv|
+    csv << [@school_name, @current_cohort, @filename]
+  end
+end
 
 def interactive_menu
   loop do
@@ -14,8 +37,8 @@ end
 def print_menu
   puts "1. Input the students"
   puts "2. Show the students"
-  puts "3. Save the list to students.csv"
-  puts "4. Load the list from students.csv"
+  puts "3. Save to file"
+  puts "4. Load from file"
   puts "5. Delete students"
   puts "9. Exit" 
 end
@@ -75,8 +98,8 @@ end
 
 def load_students(filename = "students.csv")
   @students = []
-  CSV.foreach(filename, "r") do |row|
-    @students << {name: row[0], cohort: row[1]}
+  CSV.foreach(@filename, "r") do |row|
+    @students << {name: row[0], cohort: row[1], score: row[2]}
   end
   puts "Loaded #{@students.count} from #{filename}"
 end
@@ -86,7 +109,7 @@ def input_students
   puts "To finish, just hit return twice"
   name = STDIN.gets.chomp
   while !name.empty? do
-    @students << {name: name, cohort: @current_cohort}
+    @students << {name: name, cohort: @current_cohort, score: 0}
     p @students
     puts "Student inputted. We now have #{@students.count} students"
     name = STDIN.gets.chomp
@@ -96,7 +119,7 @@ end
 def save_students
   CSV.open("students.csv", "w") do |csv|
     @students.each do |student|
-      csv << [student[:name], student[:cohort]]
+      csv << [student[:name], student[:cohort], student[:score]]
     end
   end
   puts "Saved #{@students.count} to students.csv"
@@ -123,5 +146,6 @@ def print_footer
   end
 end
 
+load_settings
 try_load_students
 interactive_menu
