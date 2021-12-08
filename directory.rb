@@ -86,22 +86,19 @@ def delete_students
 end
 
 def try_load_students
-  filename = ARGV.first 
-  if filename.nil? 
+  if File.exists?(@filename) 
     load_students
-  elsif File.exists?(filename) 
-    load_students(filename)
   else 
-    puts "Sorry, #{filename} doesn't exist. No students loaded" 
+    puts "#{@filename} doesn't exist. No students loaded" 
   end
 end
 
-def load_students(filename = "students.csv")
+def load_students
   @students = []
   CSV.foreach(@filename, "r") do |row|
     @students << {name: row[0], cohort: row[1], score: row[2]}
   end
-  puts "Loaded #{@students.count} from #{filename}"
+  puts "Loaded #{@students.count} from #{@filename}"
 end
 
 def input_students
@@ -110,7 +107,6 @@ def input_students
   name = STDIN.gets.chomp
   while !name.empty? do
     @students << {name: name, cohort: @current_cohort, score: 0}
-    p @students
     puts "Student inputted. We now have #{@students.count} students"
     name = STDIN.gets.chomp
   end
