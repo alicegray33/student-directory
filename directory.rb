@@ -1,5 +1,8 @@
 require "csv"
+@school_name = "Villains Academy"
+@current_cohort = "December"
 @students = []
+@filename = "students.csv"
 
 def interactive_menu
   loop do
@@ -70,21 +73,10 @@ def try_load_students
   end
 end
 
-def load_students_old(filename = "students.csv")
-  @students = []
-  File.open(filename, "r") do |file|
-    file.readlines.each do |line|
-    name, cohort = line.chomp.split(',')
-      @students << {name: name, cohort: cohort.to_sym}
-    end
-  end
-  puts "Loaded #{@students.count} from #{filename}"
-end
-
 def load_students(filename = "students.csv")
   @students = []
   CSV.foreach(filename, "r") do |row|
-    @students << {name: row[0], cohort: row[1].to_sym}
+    @students << {name: row[0], cohort: row[1]}
   end
   puts "Loaded #{@students.count} from #{filename}"
 end
@@ -94,7 +86,8 @@ def input_students
   puts "To finish, just hit return twice"
   name = STDIN.gets.chomp
   while !name.empty? do
-    @students << {name: name, cohort: :november}
+    @students << {name: name, cohort: @current_cohort}
+    p @students
     puts "Student inputted. We now have #{@students.count} students"
     name = STDIN.gets.chomp
   end
@@ -110,7 +103,7 @@ def save_students
 end
 
 def print_header
-  puts "The students of Villains Academy"
+  puts "The students of #{@school_name}"
   puts "-------------"
 end
 
