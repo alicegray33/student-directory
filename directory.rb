@@ -127,12 +127,12 @@ def input_students
 end
 
 def save_students
-  CSV.open("students.csv", "w") do |csv|
+  CSV.open(@filename, "w") do |csv|
     @students.each do |student|
       csv << [student[:id_num], student[:name], student[:cohort], student[:score]]
     end
   end
-  puts "Saved #{@students.count} to students.csv"
+  puts "Saved #{@students.count} to #{@filename}"
 end
 
 def print_header
@@ -148,8 +148,7 @@ def print_students_list
   puts "ID Num\tName\t\t\tCohort\t\tScore"
   puts "------------------------------------------------------"
   @students.each do |student|
-    # puts "#{student[:id_num]}. #{student[:name]} (#{student[:cohort]} cohort)"
-    puts student[:id_num].to_s.ljust(8) + student[:name].to_s.ljust(24) + student[:cohort].to_s.ljust(16) + student[:score]
+    puts student[:id_num].to_s.ljust(8) + student[:name].to_s.ljust(24) + student[:cohort].to_s.ljust(16) + student[:score].to_s
   end
   puts "------------------------------------------------------"
 end
