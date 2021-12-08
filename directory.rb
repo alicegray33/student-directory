@@ -41,7 +41,9 @@ def interactive_menu
 end
 
 def print_menu
-  puts "\nChoose an option:"
+  puts "\nMain Menu"
+  puts "---------"
+  puts "Choose an option:"
   puts "1. Input new students"
   puts "2. List the students"
   puts "3. Delete students"
@@ -52,9 +54,8 @@ def print_menu
 end
 
 def list_students
-  print_header
   print_students_list
-  print_footer
+  print_total_students
 end
 
 def process(selection)
@@ -135,27 +136,36 @@ def save_students
 end
 
 def print_header
-  puts "The students of #{@school_name}"
-  puts "-------------"
+  puts "\n#{@school_name} Student Directory"
+  @school_name.length.times { print "=" }
+  puts "=================="
 end
 
 def print_students_list
+  system('clear')
+  puts "#{@school_name} Students List"
+  puts "------------------------------------------------------"
+  puts "ID Num\tName\t\t\tCohort\t\tScore"
+  puts "------------------------------------------------------"
   @students.each do |student|
-    puts "#{student[:id_num]}. #{student[:name]} (#{student[:cohort]} cohort)"
+    # puts "#{student[:id_num]}. #{student[:name]} (#{student[:cohort]} cohort)"
+    puts student[:id_num].to_s.ljust(8) + student[:name].to_s.ljust(24) + student[:cohort].to_s.ljust(16) + student[:score]
   end
+  puts "------------------------------------------------------"
 end
 
-def print_footer
+def print_total_students
   if @students.count > 1
-    puts "Overall, we have #{@students.count} great students"
+    puts "In total, we have #{@students.count} students."
   elsif @students.count == 1
-    puts "Overall, we have 1 great student"
+    puts "In total, we have 1 student."
   else
-    puts "We have no students!"
+    puts "We currently have no students."
   end
 end
 
 system('clear')
 load_settings
 try_load_students
+print_header
 interactive_menu
