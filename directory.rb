@@ -1,3 +1,4 @@
+require "csv"
 @students = []
 
 def interactive_menu
@@ -69,13 +70,21 @@ def try_load_students
   end
 end
 
-def load_students(filename = "students.csv")
+def load_students_old(filename = "students.csv")
   @students = []
   File.open(filename, "r") do |file|
     file.readlines.each do |line|
     name, cohort = line.chomp.split(',')
       @students << {name: name, cohort: cohort.to_sym}
     end
+  end
+  puts "Loaded #{@students.count} from #{filename}"
+end
+
+def load_students(filename = "students.csv")
+  @students = []
+  CSV.foreach(filename, "r") do |row|
+    @students << {name: row[0], cohort: row[1].to_sym}
   end
   puts "Loaded #{@students.count} from #{filename}"
 end
@@ -92,11 +101,9 @@ def input_students
 end
 
 def save_students
-  File.open("students.csv", "w") do |file|
+  CSV.open("students.csv", "w") do |csv|
     @students.each do |student|
-      student_data = [student[:name], student[:cohort]]
-      csv_line = student_data.join(",")
-      file.puts csv_line
+      csv << [student[:name], student[:cohort]]
     end
   end
   puts "Saved #{@students.count} to students.csv"
