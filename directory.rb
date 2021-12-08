@@ -119,11 +119,7 @@ def load_students
 end
 
 def input_students
-  if @students.empty?
-    new_id_num = 1
-  else
-    new_id_num = @students[-1][:id_num].to_i + 1
-  end
+  new_id_num = get_new_id_num
   puts "\nPlease enter the names of the students"
   puts "To finish, just hit return twice"
   name = STDIN.gets.chomp
@@ -132,6 +128,14 @@ def input_students
     puts "Student inputted. We now have #{@students.count} students"
     new_id_num += 1
     name = STDIN.gets.chomp
+  end
+end
+
+def get_new_id_num
+  if @students.empty?
+    new_id_num = 1
+  else
+    new_id_num = @students[-1][:id_num].to_i + 1
   end
 end
 
