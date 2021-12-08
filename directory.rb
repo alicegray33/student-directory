@@ -22,6 +22,16 @@ def input_settings
   @current_cohort = STDIN.gets.chomp
   puts "Enter name of file to save students to:"
   @filename = STDIN.gets.chomp
+  save_settings
+end
+
+def change_cohort
+  puts "Enter new cohort:"
+  @current_cohort = STDIN.gets.chomp
+  save_settings
+end
+
+def save_settings
   CSV.open("settings.csv", "w") do |csv|
     csv << [@school_name, @current_cohort, @filename]
   end
@@ -39,6 +49,7 @@ def print_menu
   puts "1. Input new students"
   puts "2. List the students"
   puts "3. Delete students"
+  puts "4. Change cohort"
   puts "4. Save changes to file"
   puts "5. Reload from file"
   puts "9. Exit" 
@@ -59,8 +70,10 @@ def process(selection)
     when "3"
       delete_students
     when "4"
+      change_cohort
+    when "7"
       save_students
-    when "5"
+    when "8"
       load_students
     when "9"
       system('clear')
