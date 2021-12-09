@@ -48,6 +48,7 @@ def print_menu
   puts "2. List the students"
   puts "3. Delete students"
   puts "4. Change cohort"
+  puts "5. List students by cohort (in development)"
   puts "7. Save changes to file"
   puts "8. Reload from file"
   puts "9. Exit" 
@@ -68,6 +69,8 @@ def process(selection)
       delete_students
     when "4"
       change_cohort
+    when "5"
+      print_students_by_cohort
     when "7"
       save_students
     when "8"
@@ -152,6 +155,19 @@ def print_header
   puts "\n#{@school_name} Student Directory"
   @school_name.length.times { print "=" }
   puts "=================="
+end
+
+def print_students_by_cohort
+  puts "Enter cohort:"
+  cohort_filter = STDIN.gets.chomp
+  by_cohort = @students.select { |student| student[:cohort] == cohort_filter }
+  if !by_cohort.empty?
+    by_cohort.each do |student|
+      puts student[:id_num].to_s.ljust(8) + student[:name].to_s.ljust(24) + student[:cohort].to_s.ljust(16) + student[:score].to_s
+    end
+  else
+    puts "Cohort not found."
+  end
 end
 
 def print_students_list
