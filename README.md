@@ -4,19 +4,19 @@ The student directory script allows you to manage a list of students enrolled at
 
 ## Installation
 
-To install the script from github:
+Open Terminal, change to the directory where you want the script installed, then type:
 ```
 $ git clone https://github.com/alicegray33/student-directory
 ```
 
-The script requires the CSV library for Ruby, so if you don't already have it:
+The script requires the CSV library for Ruby. If you don't already have it, you can type the following in Terminal:
 ```
 $ gem install csv
 ```
 
 ## How to run
 
-From the command line:
+Open Terminal, change to the directory where it was installed, then type:
 ```
 $ Ruby directory.rb
 ```
