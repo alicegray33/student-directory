@@ -48,7 +48,8 @@ def print_menu
   puts "2. List the students"
   puts "3. Delete students"
   puts "4. Change cohort"
-  puts "5. List students by cohort (in development)"
+  puts "5. List students by cohort"
+  puts "6. Search students name"
   puts "7. Save changes to file"
   puts "8. Reload from file"
   puts "9. Exit" 
@@ -71,6 +72,8 @@ def process(selection)
       change_cohort
     when "5"
       print_students_by_cohort
+    when "6"
+      search_students_name
     when "7"
       save_students
     when "8"
@@ -167,6 +170,19 @@ def print_students_by_cohort
     end
   else
     puts "Cohort not found."
+  end
+end
+
+def search_students_name
+  puts "Enter name (or partia name):"
+  name_search = STDIN.gets.chomp
+  search = @students.select { |student| student[:name].include? name_search }
+  if !search.empty?
+    search.each do |student|
+      puts student[:id_num].to_s.ljust(8) + student[:name].to_s.ljust(24) + student[:cohort].to_s.ljust(16) + student[:score].to_s
+    end
+  else
+    puts "No results."
   end
 end
 
