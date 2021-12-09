@@ -9,7 +9,12 @@ Open Terminal, change to the directory where you want the script installed, then
 $ git clone https://github.com/alicegray33/student-directory
 ```
 
-The script requires the CSV library for Ruby. If you don't already have it, you can type the following in Terminal:
+The script requires the CSV library for Ruby. If you don't already have it, you can install it through Bundler by typing the following in Terminal:
+```
+$ bundle
+```
+
+Or you can install csv yourself by typing:
 ```
 $ gem install csv
 ```
