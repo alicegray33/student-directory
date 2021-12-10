@@ -43,51 +43,57 @@ def interactive_menu
 end
 
 def print_menu
-  puts "\nMain Menu"
-  puts "---------"
+  menu = "Main Menu".center(34)
+  puts "\n" + menu
+  puts "----------------------------------"
   puts "Current cohort: #{@current_cohort}"
   puts "Choose an option:"
-  puts "1. Input new students"
-  puts "2. List all students"
-  puts "3. Delete students"
-  puts "4. Change cohort"
-  puts "5. List students in current cohort"
-  puts "6. Search students name"
-  puts "7. Save changes to file"
-  puts "8. Reload from file"
-  puts "9. Exit" 
-  puts "10. Input Scores"
-  puts "11. Average Scores"
-  puts "12. Search by Student ID"
+  puts "1.  Change Cohort"
+  puts "----------------------------------"
+  puts "2.  List all students"
+  puts "3.  List students in current cohort"
+  puts "----------------------------------"
+  puts "4.  Input new students"
+  puts "5.  Delete students"
+  puts "----------------------------------"
+  puts "6.  Input scores"
+  puts "7.  Get average scores"
+  puts "----------------------------------"
+  puts "8.  Find students name"
+  puts "9.  Find students ID number" 
+  puts "----------------------------------"
+  puts "10. Save changes to file"
+  puts "11. Load from file"
+  puts "12. Exit"
 end
 
 def process(selection)
   case selection
     when "1"
-      input_students
+      change_cohort
     when "2"
       list_all_students
     when "3"
-      delete_students
-    when "4"
-      change_cohort
-    when "5"
       print_students_in_cohort
+    when "4"
+      input_students
+    when "5"
+      delete_students
     when "6"
-      search_students_name
+      input_scores
     when "7"
-      save_students
+      average_scores
     when "8"
+      search_students_name
+    when "9"
+      search_students_number
+    when "10"
+      save_students
+    when "11"
       try_load_students
       puts "Loaded #{@students.count} student/s from #{@filename}"
-    when "9"
-      check_exit
-    when "10"
-      input_scores
-    when "11"
-      average_scores
     when "12"
-      search_students_number
+      check_exit
     else
       puts "Invalid option, try again"
   end
@@ -98,25 +104,22 @@ def delete_students
   puts "To finish, just hit return twice"
   del_id = STDIN.gets.chomp
   
-  while !del_id.empty? do
-    if del_id.to_i
-      if @students.find {|student| student[:id_num] == del_id }
-        @students.delete_if { |student| student[:id_num] == del_id }
-        puts "Student deleted. We now have #{@students.count} students"
-        @edited = "Yes"
-        del_id = STDIN.gets.chomp
-      else
-        puts "Student ID not found, try again"
-        del_id = STDIN.gets.chomp
-      end
+  while !del_id.empty? do   
+    if @students.find {|student| student[:id_num] == del_id.to_i }
+      @students.delete_if { |student| student[:id_num] == del_id.to_i }
+      puts "Student deleted. We now have #{@students.count} students"
+      @edited = "Yes"
+      del_id = STDIN.gets.chomp
     else
-      puts "Invalid input, try again"
+      puts "Student ID not found, try again"
       del_id = STDIN.gets.chomp
     end
   end
+  system('clear')
 end
 
 def try_load_students
+  system('clear')
   @students = []
   if File.exists?(@filename) 
     load_students
@@ -132,6 +135,7 @@ def load_students
 end
 
 def input_students
+  system('clear')
   new_id_num = get_new_id_num
   puts "\nPlease enter the names of the students"
   puts "To finish, just hit return twice"
@@ -154,6 +158,7 @@ def get_new_id_num
 end
 
 def save_students
+  system('clear')
   CSV.open(@filename, "w") do |csv|
     @students.each do |student|
       csv << [student[:id_num], student[:name], student[:cohort], student[:score]]
