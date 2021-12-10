@@ -22,6 +22,7 @@ def input_settings
 end
 
 def change_cohort
+  system('clear')
   puts "Enter new cohort:"
   @current_cohort = STDIN.gets.chomp.capitalize
   puts "Cohort changed to #{@current_cohort}"
@@ -55,6 +56,7 @@ def print_menu
   puts "7. Save changes to file"
   puts "8. Reload from file"
   puts "9. Exit" 
+  puts "10. Input Scores"
 end
 
 def process(selection)
@@ -68,15 +70,18 @@ def process(selection)
     when "4"
       change_cohort
     when "5"
-      print_students_by_cohort
+      print_students_in_cohort
     when "6"
       search_students_name
     when "7"
       save_students
     when "8"
-      load_students
+      try_load_students
+      puts "Loaded #{@students.count} student/s from #{@filename}"
     when "9"
       check_exit
+    when "10"
+      input_scores
     else
       puts "Invalid option, try again"
   end
@@ -99,7 +104,7 @@ def delete_students
         del_id = STDIN.gets.chomp
       end
     else
-      puts "I don't know what you mean, try again"
+      puts "Invalid input, try again"
       del_id = STDIN.gets.chomp
     end
   end
@@ -109,8 +114,8 @@ def try_load_students
   @students = []
   if File.exists?(@filename) 
     load_students
-  else 
-    puts "#{@filename} doesn't exist. No students loaded" 
+  else
+    puts "No students to load."
   end
 end
 
@@ -118,7 +123,6 @@ def load_students
   CSV.foreach(@filename, "r") do |row|
     @students << {id_num: row[0], name: row[1], cohort: row[2], score: row[3]}
   end
-  puts "Loaded #{@students.count} from #{@filename}"
 end
 
 def input_students
@@ -160,11 +164,9 @@ def print_header
   print_total_students
 end
 
-def print_students_by_cohort
+def print_students_in_cohort
   system('clear')
-  puts "Enter cohort:"
-  cohort_filter = STDIN.gets.chomp
-  by_cohort = @students.select { |student| student[:cohort] == cohort_filter }
+  by_cohort = @students.select { |student| student[:cohort] == @current_cohort }
   if !by_cohort.empty?
     print_list_header
     by_cohort.each do |student|
@@ -172,7 +174,7 @@ def print_students_by_cohort
     end
     print_list_footer
   else
-    puts "Cohort not found."
+    puts "No students found in #{@current_cohort}"
   end
 end
 
@@ -227,6 +229,23 @@ def print_total_students
   else
     puts "We currently have no students."
   end
+end
+
+def input_scores
+  system('clear')
+  @students.each_with_index do |student, index|
+    if student[:cohort] == @current_cohort
+      puts "Enter score for #{student[:name]}:"
+      new_score = STDIN.gets.chomp
+      @students[index][:score] = new_score
+      @edited = "Yes"
+    end
+  end
+end
+
+def average_scores
+# List table of average, lowest, and highest score for each cohort
+
 end
 
 def check_exit
