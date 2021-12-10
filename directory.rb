@@ -57,6 +57,7 @@ def print_menu
   puts "8. Reload from file"
   puts "9. Exit" 
   puts "10. Input Scores"
+  puts "11. Average Scores"
 end
 
 def process(selection)
@@ -82,6 +83,8 @@ def process(selection)
       check_exit
     when "10"
       input_scores
+    when "11"
+      average_scores
     else
       puts "Invalid option, try again"
   end
@@ -244,8 +247,29 @@ def input_scores
 end
 
 def average_scores
-# List table of average, lowest, and highest score for each cohort
+  system('clear')
+  test_scores = {}
+  get_scores(test_scores)
+  puts "Cohort\t\tAverage Highest Lowest"
+  puts "-------------------------------------"
+  test_scores.each do |cohort,scores|
+    print cohort.to_s.ljust(16)
+    print (scores.sum(0.0) / scores.size).to_s.ljust(8)
+    print scores.max.to_s.ljust(9)
+    print scores.min
+    print "\n"
+  end
+end
 
+def get_scores(test_scores)
+  @students.each do |student|
+    if test_scores.has_key?(student[:cohort])
+      test_scores[student[:cohort]] << student[:score].to_i
+    else
+      test_scores[student[:cohort]] = [student[:score].to_i]
+    end
+  end
+  return test_scores
 end
 
 def check_exit
