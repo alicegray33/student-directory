@@ -28,8 +28,4 @@ $ Ruby directory.rb
 
 ## Usage
 
-First time use will ask you to set up some basic settings, such as asking you for the name of the school, the current cohort and where to save the list of students. Once setup you can add students, list all students and delete students.
-
-## Future Updates
-
-Currently test scores are added for all students as "0." Time permitting, I may add ways to update the test score, and calculate averages and various stats on the test scores. I also hope to add a basic search function of the students list.
+First time use will ask you to set up some basic settings, such as asking you for the name of the school, the current cohort and where to save the list of students. Once setup you can add students, list all students and delete students. You can also search for students by name or ID number. Finally; you can input test scores and then get the average score by cohort, as well as the highest and lowest scores by cohort.
