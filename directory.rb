@@ -1,4 +1,5 @@
 require "csv"
+@edited = "No"
 
 def load_settings
   if File.exists?("settings.csv")
@@ -43,12 +44,13 @@ end
 def print_menu
   puts "\nMain Menu"
   puts "---------"
+  puts "Current cohort: #{@current_cohort}"
   puts "Choose an option:"
   puts "1. Input new students"
-  puts "2. List the students"
+  puts "2. List all students"
   puts "3. Delete students"
   puts "4. Change cohort"
-  puts "5. List students by cohort"
+  puts "5. List students in current cohort"
   puts "6. Search students name"
   puts "7. Save changes to file"
   puts "8. Reload from file"
@@ -74,8 +76,7 @@ def process(selection)
     when "8"
       load_students
     when "9"
-      system('clear')
-      exit
+      check_exit
     else
       puts "Invalid option, try again"
   end
@@ -91,6 +92,7 @@ def delete_students
       if @students.find {|student| student[:id_num] == del_id }
         @students.delete_if { |student| student[:id_num] == del_id }
         puts "Student deleted. We now have #{@students.count} students"
+        @edited = "Yes"
         del_id = STDIN.gets.chomp
       else
         puts "Student ID not found, try again"
@@ -128,6 +130,7 @@ def input_students
     @students << {id_num: new_id_num.to_s, name: name, cohort: @current_cohort, score: 0}
     puts "Student inputted. We now have #{@students.count} students"
     new_id_num += 1
+    @edited = "Yes"
     name = STDIN.gets.chomp
   end
 end
@@ -146,6 +149,7 @@ def save_students
       csv << [student[:id_num], student[:name], student[:cohort], student[:score]]
     end
   end
+  @edited = "No"
   puts "Saved #{@students.count} to #{@filename}"
 end
 
@@ -153,6 +157,7 @@ def print_header
   puts "\n#{@school_name} Student Directory"
   @school_name.length.times { print "=" }
   puts "=================="
+  print_total_students
 end
 
 def print_students_by_cohort
@@ -221,6 +226,27 @@ def print_total_students
     puts "In total, we have 1 student."
   else
     puts "We currently have no students."
+  end
+end
+
+def check_exit
+  if @edited == "Yes"
+    puts "You have not saved your changes to file."
+    puts "Are you sure you want to exit? (y/n)"
+    while true do
+      input = STDIN.gets.chomp
+      if input == "y"
+        system('clear')
+        exit
+      elsif input == "n"
+        return
+      else
+        puts "Invalid option, try again"
+      end
+    end
+  else
+    system('clear')
+    exit
   end
 end
 
