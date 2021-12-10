@@ -55,17 +55,12 @@ def print_menu
   puts "9. Exit" 
 end
 
-def list_students
-  print_students_list
-  print_total_students
-end
-
 def process(selection)
   case selection
     when "1"
       input_students
     when "2"
-      list_students
+      list_all_students
     when "3"
       delete_students
     when "4"
@@ -161,43 +156,62 @@ def print_header
 end
 
 def print_students_by_cohort
+  system('clear')
   puts "Enter cohort:"
   cohort_filter = STDIN.gets.chomp
   by_cohort = @students.select { |student| student[:cohort] == cohort_filter }
   if !by_cohort.empty?
+    print_list_header
     by_cohort.each do |student|
-      puts student[:id_num].to_s.ljust(8) + student[:name].to_s.ljust(24) + student[:cohort].to_s.ljust(16) + student[:score].to_s
+      puts_student(student)
     end
+    print_list_footer
   else
     puts "Cohort not found."
   end
 end
 
 def search_students_name
-  puts "Enter name (or partia name):"
+  system('clear')
+  puts "Enter name (or partial name):"
   name_search = STDIN.gets.chomp
   search = @students.select { |student| student[:name].include? name_search }
   if !search.empty?
+    print_list_header
     search.each do |student|
-      puts student[:id_num].to_s.ljust(8) + student[:name].to_s.ljust(24) + student[:cohort].to_s.ljust(16) + student[:score].to_s
+      puts_student(student)
     end
+    print_list_footer
   else
     puts "No results."
   end
 end
 
-def print_students_list
+def list_all_students
   if !@students.empty?
     system('clear')
     puts "#{@school_name} Students List"
-    puts "------------------------------------------------------"
-    puts "ID Num\tName\t\t\tCohort\t\tScore"
-    puts "------------------------------------------------------"
+    print_list_header
     @students.each do |student|
-      puts student[:id_num].to_s.ljust(8) + student[:name].to_s.ljust(24) + student[:cohort].to_s.ljust(16) + student[:score].to_s
+      puts_student(student)
     end
-    puts "------------------------------------------------------"
+    print_list_footer
+    print_total_students
   end
+end
+
+def puts_student(student)
+  puts student[:id_num].to_s.ljust(8) + student[:name].to_s.ljust(24) + student[:cohort].to_s.ljust(16) + student[:score].to_s
+end
+
+def print_list_header
+  puts "------------------------------------------------------"
+  puts "ID Num\tName\t\t\tCohort\t\tScore"
+  puts "------------------------------------------------------"
+end
+
+def print_list_footer
+  puts "------------------------------------------------------"
 end
 
 def print_total_students
