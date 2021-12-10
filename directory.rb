@@ -58,6 +58,7 @@ def print_menu
   puts "9. Exit" 
   puts "10. Input Scores"
   puts "11. Average Scores"
+  puts "12. Search by Student ID"
 end
 
 def process(selection)
@@ -85,6 +86,8 @@ def process(selection)
       input_scores
     when "11"
       average_scores
+    when "12"
+      search_students_number
     else
       puts "Invalid option, try again"
   end
@@ -124,7 +127,7 @@ end
 
 def load_students 
   CSV.foreach(@filename, "r") do |row|
-    @students << {id_num: row[0], name: row[1], cohort: row[2], score: row[3]}
+    @students << {id_num: row[0].to_i, name: row[1], cohort: row[2], score: row[3]}
   end
 end
 
@@ -135,7 +138,7 @@ def input_students
   name = STDIN.gets.chomp
   while !name.empty? do
     @students << {id_num: new_id_num.to_s, name: name, cohort: @current_cohort, score: 0}
-    puts "Student inputted. We now have #{@students.count} students"
+    puts "#{name} inputted with student ID number: #{new_id_num}"
     new_id_num += 1
     @edited = "Yes"
     name = STDIN.gets.chomp
@@ -146,7 +149,7 @@ def get_new_id_num
   if @students.empty?
     new_id_num = 1
   else
-    new_id_num = @students[-1][:id_num].to_i + 1
+    new_id_num = @students[-1][:id_num] + 1
   end
 end
 
@@ -171,11 +174,13 @@ def print_students_in_cohort
   system('clear')
   by_cohort = @students.select { |student| student[:cohort] == @current_cohort }
   if !by_cohort.empty?
+    puts "#{@school_name} - Students in #{@current_cohort} cohort."
     print_list_header
     by_cohort.each do |student|
       puts_student(student)
     end
     print_list_footer
+    print_total_students(by_cohort)
   else
     puts "No students found in #{@current_cohort}"
   end
@@ -187,6 +192,24 @@ def search_students_name
   name_search = STDIN.gets.chomp
   search = @students.select { |student| student[:name].include? name_search }
   if !search.empty?
+    puts "Search results:"
+    print_list_header
+    search.each do |student|
+      puts_student(student)
+    end
+    print_list_footer
+  else
+    puts "No results."
+  end
+end
+
+def search_students_number
+  system('clear')
+  puts "Enter student ID number:"
+  id_search = STDIN.gets.chomp.to_i
+  search = @students.select { |student| student[:id_num] == id_search }
+  if !search.empty?
+    puts "Search results:"
     print_list_header
     search.each do |student|
       puts_student(student)
@@ -200,7 +223,7 @@ end
 def list_all_students
   if !@students.empty?
     system('clear')
-    puts "#{@school_name} Students List"
+    puts "#{@school_name} - All Students"
     print_list_header
     @students.each do |student|
       puts_student(student)
@@ -224,13 +247,13 @@ def print_list_footer
   puts "------------------------------------------------------"
 end
 
-def print_total_students
-  if @students.count > 1
-    puts "In total, we have #{@students.count} students."
-  elsif @students.count == 1
-    puts "In total, we have 1 student."
+def print_total_students(students = @students)
+  if students.count > 1
+    puts "In total, there are #{students.count} students."
+  elsif students.count == 1
+    puts "In total, there is 1 student."
   else
-    puts "We currently have no students."
+    puts "There are no students to list."
   end
 end
 
@@ -240,8 +263,11 @@ def input_scores
     if student[:cohort] == @current_cohort
       puts "Enter score for #{student[:name]}:"
       new_score = STDIN.gets.chomp
-      @students[index][:score] = new_score
-      @edited = "Yes"
+      while !new_score.empty? do        
+        @students[index][:score] = new_score.to_i
+        @edited = "Yes"
+        new_score = ""
+      end
     end
   end
 end
