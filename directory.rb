@@ -254,7 +254,7 @@ def average_scores
   puts "-------------------------------------"
   test_scores.each do |cohort,scores|
     print cohort.to_s.ljust(16)
-    print (scores.sum(0.0) / scores.size).to_s.ljust(8)
+    print (scores.sum(0.0) / scores.size).floor(2).to_s.ljust(8)
     print scores.max.to_s.ljust(9)
     print scores.min
     print "\n"
